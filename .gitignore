@@ -1,0 +1,5 @@
+*.asv
+train-images-idx3*
+*.zip
+*.gz
+*.mat
