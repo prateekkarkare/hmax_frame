@@ -1,28 +1,37 @@
 % Change the filenames if you've saved the files under different names
 % On some platforms, the files might be saved as 
 % train-images.idx3-ubyte / train-labels.idx1-ubyte
-%images = loadMNISTImages('./train-images-idx3-ubyte/train-images.idx3-ubyte');
+images = loadMNISTImages('./train-images-idx3-ubyte/train-images.idx3-ubyte');
 %labels = loadMNISTLabels('train-labels-idx1-ubyte');
 
 %Other images
-load('exampleImages.mat');
-for iImg = 1:size(exampleImages,2)
-    exampleImages{iImg} = double(rgb2gray(imread(exampleImages{iImg})));
-end
+%load('exampleImages.mat');
+%for iImg = 1:size(exampleImages,2)
+%    exampleImages{iImg} = double(rgb2gray(imread(exampleImages{iImg})));
+%end
 
-%reshape(ceil(images(:,1).*255), 28 , 28);
-%I = reshape(images(:,1), 28, 28)*255;
+%I = exampleImages{1};
+%imshow(double(rgb2gray(imread(exampleImages{1}))),[])
 
-I = exampleImages{1};
+I = reshape(images(:,1), 28, 28);
 
 tuningFactors = 4:-.05:3.25;
-filterScales = 7:2:37;
+%MNIST
+filterScales = 3:2:9;               
+lambdaVector = [1.5 2.5 3.5 4.6];   
+sigmaVector =  [1.2 2.0 2.8 3.6];   
+%Example
+%filterScales = 7:2:37;
+%lambdaVector = filterScales.*2./tuningFactors;
+%sigmaVector =  lambdaVector.*0.8;
+
+gammaVector = repmat(0.3,[1 length(filterScales)]);
 orientations = [0 45 90 135];
-filterMatrixCell = gaborFilters(orientations, filterScales, tuningFactors);
+filterMatrixCell = gaborFilters(orientations, filterScales, lambdaVector, sigmaVector, gammaVector);
 
 s1ResponseMap = S1( filterMatrixCell, I );
 
-numBands = 1:1:8;
+numBands = 1:1:4;
 scaleGroupIndex = length(filterScales)/length(numBands);
 s1ResponseGroup = cell(length(numBands), scaleGroupIndex, length(orientations));
 
