@@ -1,3 +1,5 @@
+clear all 
+
 % Change the filenames if you've saved the files under different names
 % On some platforms, the files might be saved as 
 % train-images.idx3-ubyte / train-labels.idx1-ubyte
@@ -106,6 +108,17 @@ for iPatchSize = 1:nPatchSizes
         s2{iPatch} = cell(length(numBands),1);
         for iBand = 1:length(numBands)
             s2{iPatch}{iBand} = windowedPatchDistance(c1MapCell{iBand},squarePatch);  
+        end
+    end
+end
+
+c2 = zeros(1,nPatches);
+for iPatch = 1:nPatches
+    for iBand = 1:length(numBands)
+        [nRows, nCols] = size(s2{iPatch}{iBand});
+        [maxValue, maxLocation] = max(s2{iPatch}{iBand}(:));
+        if maxValue > c2(iPatch)
+            c2(iPatch) = maxValue;
         end
     end
 end
